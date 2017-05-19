@@ -1,2 +1,8 @@
 # pythonScraper
-beautiful soup web scraper 
+    * beautiful soup web scraper 
+    * amazon.in 
+    * weather.com
+    * basket-reference.com
+    
+    modules for scraping images, tables, saving in csv file.
+    
