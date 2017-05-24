@@ -13,42 +13,6 @@ uClient.close()
 #html parsing
 
 page_soup = soup(page_html, "html.parser")      #make soup
-'''
-image = page_soup.findAll("img")
-img = image[0]
-i = 1
-
-temp = img.get('src')
-temp = "https:/"+temp
-print(temp)
-
-fileName = "logo"
-imageFile = open(fileName+".jpeg",'w')
-buffer = urllib.request.urlopen(temp)
-imageFile.write(buffer.read())
-imageFile.close()
-
-
-
-for img in image:
-    temp = img.get('src')   #temp -> src
-    if temp[:1]=='/':
-        temp = "https:/"+temp
-    else:
-        temp = temp
-#writing images
-
-    nameTemp = img.get('alt')
-    if len(nameTemp) == 0:
-        fileName = str(i)
-        i = i+1
-    else:
-        fileName = nameTemp
-
-    imageFile = open(fileName+".jpeg",'wb')
-    imageFile.write(urllib.request.urlopen(temp).read())
-    imageFile.close()
-'''
 
 print(page_soup.h1)
 #grabs each product
