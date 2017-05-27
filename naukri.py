@@ -18,10 +18,10 @@ def make_soup(url):
     soupdata = BeautifulSoup(thepage, "html.parser")
     return soupdata
 
-cat = "Aviation"
+cat = "IT"
 #surl = "https://www.naukri.com/business-intelligence-jobs?xt=catsrch&qf[]=81"
-#surl = "https://www.naukri.com/information-technology-jobs?qi%5B%5D=25&xt=catsrch"
-surl = "https://www.naukri.com/aviation-jobs?xt=catsrch&qi[]=46"
+surl = "https://www.naukri.com/information-technology-jobs?xt=catsrch&qi[]=25"
+
 soup = make_soup(surl)
 
 
@@ -35,13 +35,13 @@ i = 0
 
 p = 1
 filename = "nakuri"+cat+".csv"
-f = open(filename, "w")
+f = open(filename, "w", encoding="utf-8")
 headers = "link, desig, details, org, loc, exp, keyskills, descl, salary \n"
 f.write(headers)
-next1 = "https://www.naukri.com/aviation-jobs-2"
+next1 = "https://www.naukri.com/information-technology-jobs-2"
 
 
-while(next1!="" and p<=2):
+while(next1!="" and p<=30):
 #p for limiting spider
 
     print("scraping page "+str(p))
