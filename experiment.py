@@ -20,8 +20,8 @@ cat = "HR"
 filename = "nakurit"+cat+".csv"
 
 #surl = "https://www.naukri.com/business-intelligence-jobs?xt=catsrch&qf[]=81"
-surl = "https://www.naukri.com/hr-jobs-2"
-next1 = "https://www.naukri.com/hr-jobs-3"       #second page link
+surl = "https://www.naukri.com/hr-jobs"
+next1 = "https://www.naukri.com/hr-jobs-2"       #second page link
 
 soup = make_soup(surl)
 
@@ -35,16 +35,32 @@ i = 0
 #print(containers[0])
 
 
+f = open(filename,'r')
+pData = f.read()
+f.close()
+firstR = ""
+with open(filename, newline='') as f:
+  reader = csv.reader(f)
+  for row in reader:
+    firstR = row
+    break
+
+firstR = str(firstR)
+parts = firstR.split(",")
+
+f.close()
+#check for overwriting end
+
 p = 1
 
 
 
 f = open(filename, "w", encoding="utf-8")
-headers = "link, desig, details, org, loc, exp, keyskills, descl, salary, date \n"
-#f.write(headers)
+headers = "uID, link, desig, details, org, loc, exp, keyskills, descl, salary, date \n"
+f.write(headers)
 
 
-while(next1!="" and p<15):
+while(next1!="" and p<7):
 #p for limiting spider according to number of pages
 #date for limiting spider according to date
 
@@ -87,7 +103,7 @@ while(next1!="" and p<15):
         try:
             loc = str(loc.text)
             loc = loc.replace("None"," ")
-            loc = loc.replace(",","-")
+            loc = loc.replace(",","")
         except:
             loc = ""
 
@@ -109,12 +125,10 @@ while(next1!="" and p<15):
 
         desc = con.find("span",{"class":"desc"})
         desc1 = str(desc)
-        desc1 = desc1.strip()
         desc1 = desc1.replace("<span class=\"desc\" itemprop=\"description\">","")
         desc1 = desc1.replace("</span>","")
         desc1 = desc1.replace("None"," ")
         desc1 = desc1.replace(",","-")
-        desc1 = desc1.replace("&amp;","&")
 
         salary = t.find("span",{"class":"salary"})
         salary = str(salary.text)
@@ -134,17 +148,21 @@ while(next1!="" and p<15):
         date = date.replace(",","")
 
 
-        i = i + 1
-
-        if(link!=""):
+        if desig in parts[1] and details in parts[2] and org in parts[3] and Keyskills in parts[6] and desc1 in parts[7] and salary in parts[8] :
+            print("***stale data***")
+            p = 100
+            break
+        else:
+            print("fresh data")
+            i = i + 1
             f.write(link + "," + desig+ "," + details+","+ org+","+ loc+","+ exp+","+ Keyskills+","+desc1+","+ salary+","+date+"\n")
-        '''
-        print("scraping "+i+" container....")
-        print(link+"\n"+desig+"\n"+details+"\n"+org+"\n"+loc+"\n"+exp+"\n"+Keyskills+"\n"+desc1)
-        print(date)
-        print("\n")
-        '''
-        date = int(date)
+            '''
+            print("scraping "+i+" container....")
+            print(link+"\n"+desig+"\n"+details+"\n"+org+"\n"+loc+"\n"+exp+"\n"+Keyskills+"\n"+desc1)
+            print(date)
+            print("\n")
+            '''
+            date = int(date)
 
     print("final no. of entries "+ str(i))
     print("end of page : "+str(p))
@@ -172,5 +190,6 @@ while(next1!="" and p<15):
 
 print("final p "+ str(p))
 
+f.write(pData)
 f.close()
 
