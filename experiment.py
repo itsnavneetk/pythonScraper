@@ -56,7 +56,7 @@ p = 1
 
 
 f = open(filename, "w", encoding="utf-8")
-headers = "uID, link, desig, details, org, loc, exp, keyskills, descl, salary, date \n"
+headers = "link, desig, details, org, loc, exp, keyskills, descl, salary, date \n"
 f.write(headers)
 
 
