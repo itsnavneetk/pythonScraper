@@ -1,7 +1,8 @@
 import urllib
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
-import csv
+import re
+from datetime import datetime, timedelta
 
 def make_soup(url):
 
@@ -16,12 +17,12 @@ def make_soup(url):
     soupdata = BeautifulSoup(thepage, "html.parser")
     return soupdata
 
-cat = "HR"
-filename = "nakurit"+cat+".csv"
+cat = "IT_05"
+filename = "nakuri"+cat+".csv"
 
 #surl = "https://www.naukri.com/business-intelligence-jobs?xt=catsrch&qf[]=81"
-surl = "https://www.naukri.com/hr-jobs-2"
-next1 = "https://www.naukri.com/hr-jobs-3"       #second page link
+surl = "https://www.naukri.com/it-jobs-64"
+next1 = "https://www.naukri.com/it-jobs-65"       #second page link
 
 soup = make_soup(surl)
 
@@ -40,8 +41,8 @@ p = 1
 
 
 f = open(filename, "w", encoding="utf-8")
-headers = "link, desig, details, org, loc, exp, keyskills, descl, salary, date \n"
-#f.write(headers)
+headers = "link, desig, details, org, loc, exp, keyskills, descl, salary, date, expLow, expHigh, salLow, salHigh \n"
+f.write(headers)
 
 
 while(next1!="" and p<15):
@@ -92,10 +93,16 @@ while(next1!="" and p<15):
             loc = ""
 
         exp = con.find("span",{"class":"exp"})
+        expLow =""
+        expHigh =""
         try:
             exp = str(exp.text)
             exp = exp.replace("None"," ")
             exp = exp.replace(",","")
+
+            expLow = exp.split("-")[0]
+            expHigh = exp.split("-")[1]
+            expHigh = expHigh.replace(" yrs","")
         except:
             exp = ""
 
@@ -122,29 +129,43 @@ while(next1!="" and p<15):
         salary = salary.replace("None"," ")
         salary = salary.replace(",","")
 
+        salLow='0'
+        salHigh='0'
+        if(salary!="Not disclosed"):
+            salDigits = re.findall('\d+', salary)
+            if(len(salDigits)>0):
+                salLow = salDigits[0]+""
+            if(len(salDigits)>1):
+                salHigh = salDigits[1]+""
+
         date = t.find("span",{"class":"date"})
         date = str(date.text)
         date = date.strip()
         date = date.replace("None"," ")
-        date = date.replace("Few Hours Ago","0 day ago")
-        date = date.replace("Today","0 day ago")
-        date = date.replace("Just Now","0 day ago")
+        date = date.replace("Few Hours Ago","0")
+        date = date.replace("Today","0")
+        date = date.replace("Just Now","0")
         date = date.replace(" day ago","")
         date = date.replace(" days ago","")
         date = date.replace(",","")
 
 
+        days_to_subtract = int(date)
+
+        date = datetime.today() - timedelta(days=days_to_subtract)
+        date = str(date.date())
+
         i = i + 1
 
         if(link!=""):
-            f.write(link + "," + desig+ "," + details+","+ org+","+ loc+","+ exp+","+ Keyskills+","+desc1+","+ salary+","+date+"\n")
+            f.write(link + "," + desig+ "," + details+","+ org+","+ loc+","+ exp+","+ Keyskills+","+desc1+","+ salary+","+date+","+ expLow+","+expHigh+","+salLow+","+salHigh+"\n")
         '''
         print("scraping "+i+" container....")
         print(link+"\n"+desig+"\n"+details+"\n"+org+"\n"+loc+"\n"+exp+"\n"+Keyskills+"\n"+desc1)
         print(date)
         print("\n")
         '''
-        date = int(date)
+        date = int(days_to_subtract)
 
     print("final no. of entries "+ str(i))
     print("end of page : "+str(p))
