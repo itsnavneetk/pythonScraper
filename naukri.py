@@ -17,12 +17,12 @@ def make_soup(url):
     soupdata = BeautifulSoup(thepage, "html.parser")
     return soupdata
 
-cat = "IT_05"
+cat = "IT_01"
 filename = "nakuri"+cat+".csv"
 
 #surl = "https://www.naukri.com/business-intelligence-jobs?xt=catsrch&qf[]=81"
-surl = "https://www.naukri.com/it-jobs-64"
-next1 = "https://www.naukri.com/it-jobs-65"       #second page link
+surl = "https://www.naukri.com/it-jobs"
+next1 = "https://www.naukri.com/it-jobs-2"       #second page link
 
 soup = make_soup(surl)
 
