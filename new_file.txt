@@ -4,3 +4,7 @@
 New string from feature - by collaborator
 This is a new comment in DEV - manager
 #development
+
+some more text from local
+
+additional text
